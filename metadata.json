@@ -1,0 +1,6 @@
+{
+  "name": "Smartesion AI Tutor",
+  "description": "An interactive all-in-one learning platform combining a Duolingo-style path, ChatGPT conversational tutor, and dynamic quiz challenges highlighting real-world applications.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
