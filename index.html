@@ -6,8 +6,33 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     <title>Smartesion AR</title>
+    <style>
+      .install-fab{
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: #2563eb;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    z-index:9999;
+    transition:.3s;
+}
+
+.install-fab:hover{
+    transform:scale(1.08);
+}
+    </style>
   </head>
   <body>
+    <button id="installApp" class="install-fab" hidden>
+    📲
+</button>
     <div class="install-overlay" id="installOverlay" style="display: flex;">
   <div class="install-card">
     <h2>⚠ Install Required</h2>
@@ -28,6 +53,28 @@
       if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js');
 }
+      let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+
+    deferredPrompt = e;
+
+    document.getElementById("installApp").hidden = false;
+});
+
+document.getElementById("installApp").addEventListener("click", async () => {
+
+    if(!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+
+    await deferredPrompt.userChoice;
+
+    deferredPrompt = null;
+
+    document.getElementById("installApp").hidden = true;
+});
     </script>
   </body>
 </html>
