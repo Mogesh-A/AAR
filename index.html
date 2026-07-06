@@ -8,6 +8,21 @@
     <title>Smartesion AR</title>
   </head>
   <body>
+    <div class="install-overlay" id="installOverlay" style="display: flex;">
+  <div class="install-card">
+    <h2>⚠ Install Required</h2>
+
+    <p>
+      Install <strong>VantageAI</strong> for a faster,
+      smoother experience with offline support.
+    </p>
+
+    <div class="buttons">
+      <button id="installBtn">Install Now</button>
+      <button id="laterBtn">Later</button>
+    </div>
+  </div>
+</div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx">
       if ('serviceWorker' in navigator) {
