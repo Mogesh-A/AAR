@@ -8,32 +8,27 @@
     <title>Smartesion AR</title>
     <style>
       .install-fab{
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: none;
-    background: #2563eb;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-    box-shadow: 0 8px 20px rgba(0,0,0,.25);
-    z-index:9999;
-    transition:.3s;
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.3);
 }
 
-.install-fab:hover{
-    transform:scale(1.08);
+.install-fab img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
     </style>
   </head>
   <body>
-    <button id="installApp" class="install-fab" hidden>
-    📲
-</button>
-    <div class="install-overlay" id="installOverlay" style="display: flex;">
+       <div id="installApp" class="install-fab" hidden>
+    <img src="icon-192.png" alt="Install VantageAI">
   <div class="install-card">
     <h2>⚠ Install Required</h2>
 
@@ -53,29 +48,7 @@
       if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js');
 }
-      let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-
-    deferredPrompt = e;
-
-    document.getElementById("installApp").hidden = false;
-});
-
-document.getElementById("installApp").addEventListener("click", async () => {
-
-    if(!deferredPrompt) return;
-
-    deferredPrompt.prompt();
-
-    await deferredPrompt.userChoice;
-
-    deferredPrompt = null;
-
-    document.getElementById("installApp").hidden = true;
-});
-    </script>
+        </script>
   </body>
 </html>
 
