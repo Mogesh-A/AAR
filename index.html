@@ -56,27 +56,46 @@
             }
         }
 
-        /* Overlay */
+       .overlay{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
 
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .65);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
-        .card {
-            width: 360px;
-            max-width: 90%;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            animation: popup .35s ease;
-        }
+    background:rgba(0,0,0,.65);
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:.3s;
+
+    z-index:999999;
+}
+
+.overlay.show{
+    opacity:1;
+    visibility:visible;
+}
+
+       .card{
+    width:380px;
+    max-width:90%;
+    background:#fff;
+    border-radius:20px;
+    padding:30px;
+    text-align:center;
+
+    position:relative;
+
+    box-shadow:0 20px 40px rgba(0,0,0,.3);
+
+    animation:popup .3s ease;
+}
 
         @keyframes popup {
             from {
@@ -199,7 +218,7 @@ const laterBtn = document.getElementById("laterBtn");
 
 // Show overlay immediately when page loads
 window.addEventListener("load", () => {
-    overlay.style.display = "flex";
+    overlay.classList.add("show");
 });
 
 // Capture the install event
@@ -225,7 +244,7 @@ installBtn.addEventListener("click", async () => {
         alert("The app is not ready to install yet. Please continue using the app for a moment and try again.");
     }
 
-    overlay.style.display = "none";
+    overlay.classList.remove("show");
     fab.style.display = "block";
 
 });
