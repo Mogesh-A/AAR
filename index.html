@@ -1,54 +1,236 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="manifest" href="/manifest.json" />
     <title>Smartesion AR</title>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/favicon.ico">
+
     <style>
-      .install-fab{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    width:65px;
-    height:65px;
-    border-radius:50%;
-    overflow:hidden;
-    cursor:pointer;
-    box-shadow:0 6px 18px rgba(0,0,0,.3);
-}
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,Helvetica,sans-serif;
+        }
 
-.install-fab img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
+        /* Floating Install Button */
+
+        #installApp{
+            position:fixed;
+            right:25px;
+            bottom:25px;
+            width:70px;
+            height:70px;
+            border-radius:50%;
+            overflow:hidden;
+            cursor:pointer;
+            box-shadow:0 8px 20px rgba(0,0,0,.3);
+            z-index:9999;
+            display:none;
+            animation:bounce 2s infinite;
+        }
+
+        #installApp img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        @keyframes bounce{
+
+            0%,100%{
+                transform:translateY(0);
+            }
+
+            50%{
+                transform:translateY(-8px);
+            }
+        }
+
+        /* Overlay */
+
+        .overlay{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.65);
+            display:none;
+            justify-content:center;
+            align-items:center;
+            z-index:10000;
+        }
+
+        .card{
+            width:360px;
+            background:#fff;
+            border-radius:18px;
+            padding:25px;
+            text-align:center;
+            box-shadow:0 20px 40px rgba(0,0,0,.25);
+        }
+
+        .card img{
+            width:90px;
+            margin-bottom:15px;
+        }
+
+        .card h2{
+            margin-bottom:10px;
+            color:#0d47a1;
+        }
+
+        .card p{
+            color:#555;
+            line-height:1.6;
+            margin-bottom:25px;
+        }
+
+        .buttons{
+            display:flex;
+            gap:10px;
+            justify-content:center;
+        }
+
+        .buttons button{
+            border:none;
+            padding:12px 25px;
+            border-radius:10px;
+            cursor:pointer;
+            font-size:15px;
+            transition:.3s;
+        }
+
+        #installBtn{
+            background:#1565c0;
+            color:white;
+        }
+
+        #installBtn:hover{
+            background:#0d47a1;
+        }
+
+        #laterBtn{
+            background:#eceff1;
+        }
+
+        #laterBtn:hover{
+            background:#cfd8dc;
+        }
+
     </style>
-  </head>
-  <body>
-       <div id="installApp" class="install-fab" hidden>
-    <img src="icon-192.png" alt="Install VantageAI">
-  <div class="install-card">
-    <h2>⚠ Install Required</h2>
 
-    <p>
-      Install <strong>Smartesion AR</strong> for a faster,
-      smoother experience with offline support.
-    </p>
+</head>
 
-    <div class="buttons">
-      <button id="installBtn">Install Now</button>
-      <button id="laterBtn">Later</button>
-    </div>
-  </div>
+<body>
+
+<div id="root"></div>
+
+<!-- Floating Button -->
+
+<div id="installApp">
+    <img src="/icon-192.png">
 </div>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx">
-      if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
-}
-        </script>
-  </body>
-</html>
 
+<!-- Overlay -->
+
+<div class="overlay" id="installOverlay">
+
+    <div class="card">
+
+        <img src="/icon-192.png">
+
+        <h2>Install Smartesion AR</h2>
+
+        <p>
+
+            Install Smartesion AR for a faster experience,
+            offline access and one-tap launching from your home screen.
+
+        </p>
+
+        <div class="buttons">
+
+            <button id="installBtn">
+                Install Now
+            </button>
+
+            <button id="laterBtn">
+                Later
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script type="module" src="/src/main.tsx"></script>
+
+<script>
+
+let deferredPrompt;
+
+const fab=document.getElementById("installApp");
+const overlay=document.getElementById("installOverlay");
+const installBtn=document.getElementById("installBtn");
+const laterBtn=document.getElementById("laterBtn");
+
+window.addEventListener("beforeinstallprompt",(e)=>{
+
+    e.preventDefault();
+
+    deferredPrompt=e;
+
+    fab.style.display="block";
+
+});
+
+fab.onclick=()=>{
+
+    overlay.style.display="flex";
+
+}
+
+laterBtn.onclick=()=>{
+
+    overlay.style.display="none";
+
+}
+
+installBtn.onclick=async()=>{
+
+    if(!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+
+    await deferredPrompt.userChoice;
+
+    deferredPrompt=null;
+
+    overlay.style.display="none";
+
+    fab.style.display="none";
+
+};
+
+window.addEventListener("appinstalled",()=>{
+
+    overlay.style.display="none";
+    fab.style.display="none";
+
+});
+
+if("serviceWorker" in navigator){
+
+    navigator.serviceWorker.register("/service-worker.js");
+
+}
+
+</script>
+
+</body>
+
+</html>
