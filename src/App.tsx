@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-
+import InstallPopup from "./components/InstallPopup";
 import React from "react";
 import TutorAppView from "./components/TutorAppView";
 import { 
@@ -11,6 +11,8 @@ import {
 
 export default function App() {
   return (
+    <>
+    <InstallPopup /></>
     <div id="root-layout" className="min-h-screen bg-[#07080b] text-slate-100 flex flex-col font-sans select-none antialiased">
       {/* Top Universal Navbar */}
       <header className="bg-[#0b0d13] border-b border-indigo-950/60 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl sticky top-0 z-50">
