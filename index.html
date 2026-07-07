@@ -190,79 +190,67 @@
 
     <script>
 
-        let deferredPrompt;
+       let deferredPrompt;
 
-        const fab = document.getElementById("installApp");
-        const overlay = document.getElementById("installOverlay");
-        const installBtn = document.getElementById("installBtn");
-        const laterBtn = document.getElementById("laterBtn");
+const fab = document.getElementById("installApp");
+const overlay = document.getElementById("installOverlay");
+const installBtn = document.getElementById("installBtn");
+const laterBtn = document.getElementById("laterBtn");
 
-        // Register Service Worker
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/service-worker.js");
+// Show overlay immediately when page loads
+window.addEventListener("load", () => {
+    overlay.style.display = "flex";
+});
+
+// Capture the install event
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+// Install button
+installBtn.addEventListener("click", async () => {
+
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+
+        const { outcome } = await deferredPrompt.userChoice;
+
+        if (outcome === "accepted") {
+            console.log("User installed the app.");
         }
 
-        // Show overlay automatically
-        window.addEventListener("beforeinstallprompt", (e) => {
+        deferredPrompt = null;
+    } else {
+        alert("The app is not ready to install yet. Please continue using the app for a moment and try again.");
+    }
 
-            e.preventDefault();
+    overlay.style.display = "none";
+    fab.style.display = "block";
 
-            deferredPrompt = e;
+});
 
-            overlay.style.display = "flex";
+// Later button
+laterBtn.addEventListener("click", () => {
+    overlay.style.display = "none";
+    fab.style.display = "block";
+});
 
-        });
+// Floating icon opens overlay again
+fab.addEventListener("click", () => {
+    overlay.style.display = "flex";
+});
 
-        // Install App
-        installBtn.addEventListener("click", async () => {
+// Hide everything after installation
+window.addEventListener("appinstalled", () => {
+    overlay.style.display = "none";
+    fab.style.display = "none";
+});
 
-            if (!deferredPrompt) return;
-
-            deferredPrompt.prompt();
-
-            const result = await deferredPrompt.userChoice;
-
-            if (result.outcome === "accepted") {
-                console.log("User accepted install.");
-            } else {
-                console.log("User dismissed install.");
-            }
-
-            deferredPrompt = null;
-
-            overlay.style.display = "none";
-            fab.style.display = "none";
-
-        });
-
-        // Later Button
-        laterBtn.addEventListener("click", () => {
-
-            overlay.style.display = "none";
-
-            // Show floating button
-            fab.style.display = "block";
-
-        });
-
-        // Floating button opens popup again
-        fab.addEventListener("click", () => {
-
-            overlay.style.display = "flex";
-
-        });
-
-        // Hide after installation
-        window.addEventListener("appinstalled", () => {
-
-            overlay.style.display = "none";
-            fab.style.display = "none";
-
-            console.log("App Installed");
-
-        });
-
-    </script>
+// Register Service Worker
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js");
+}    </script>
 
 </body>
 
