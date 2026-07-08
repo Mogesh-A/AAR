@@ -4,184 +4,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json">
     <title>Smartesion AR</title>
 
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/favicon.ico">
-    <style>
-.install-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.65);
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    z-index:99999;
-}
-
-.install-card{
-
-    width:380px;
-    max-width:90%;
-
-    background:#fff;
-    border-radius:20px;
-
-    padding:30px;
-
-    text-align:center;
-
-    animation:popup .35s ease;
-
-    box-shadow:0 20px 40px rgba(0,0,0,.25);
-
-}
-
-.install-card img{
-
-    width:90px;
-    margin-bottom:15px;
-
-}
-
-.install-card h2{
-
-    margin-bottom:10px;
-    color:#1565C0;
-
-}
-
-.install-card p{
-
-    color:#555;
-    line-height:1.7;
-    margin-bottom:25px;
-
-}
-
-.buttons{
-
-    display:flex;
-    justify-content:center;
-    gap:15px;
-
-}
-
-.install-btn{
-
-    background:#1565C0;
-    color:white;
-
-    border:none;
-    border-radius:10px;
-
-    padding:12px 25px;
-
-    cursor:pointer;
-
-    font-size:16px;
-
-}
-
-.install-btn:hover{
-
-    background:#0d47a1;
-
-}
-
-.later-btn{
-
-    background:#ECEFF1;
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:12px 25px;
-
-    cursor:pointer;
-
-    font-size:16px;
-
-}
-
-.install-fab{
-
-    position:fixed;
-
-    right:25px;
-    bottom:25px;
-
-    width:70px;
-    height:70px;
-
-    border-radius:50%;
-
-    overflow:hidden;
-
-    cursor:pointer;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.3);
-
-    animation:bounce 2s infinite;
-
-    z-index:99999;
-
-}
-
-.install-fab img{
-
-    width:100%;
-    height:100%;
-    object-fit:cover;
-
-}
-
-@keyframes popup{
-
-    from{
-
-        opacity:0;
-        transform:scale(.8);
-
-    }
-
-    to{
-
-        opacity:1;
-        transform:scale(1);
-
-    }
-
-}
-
-@keyframes bounce{
-
-    0%,100%{
-
-        transform:translateY(0);
-
-    }
-
-    50%{
-
-        transform:translateY(-8px);
-
-    }
-
-}
-        </style>
     
+    <link rel="icon" href="/favicon.ico">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        /* Floating Install Button */
+
+        #installApp {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .3);
+            z-index: 9999;
+            display: none;
+            animation: bounce 2s infinite;
+        }
+
+        #installApp img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* Overlay */
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .65);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .card {
+            width: 360px;
+            max-width: 90%;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            animation: popup .35s ease;
+        }
+
+        @keyframes popup {
+            from {
+                opacity: 0;
+                transform: scale(.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .card img {
+            width: 90px;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .buttons button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: .3s;
+        }
+
+        #installBtn {
+            background: #1565c0;
+            color: white;
+        }
+
+        #installBtn:hover {
+            background: #0d47a1;
+        }
+
+        #laterBtn {
+            background: #eceff1;
+        }
+
+        #laterBtn:hover {
+            background: #cfd8dc;
+        }
+
+    </style>
+
 </head>
 
 <body>
 
-    <div id="root"></div>
-
    
+
+    <!-- Floating Install Button -->
+
+    <div id="installApp">
+        <img src="/icon-192.png" alt="Install">
+    </div>
+
+    <!-- Install Overlay -->
+
+    <div class="overlay" id="installOverlay">
+
+        <div class="card">
+
+            <img src="/icon-192.png" alt="Logo">
+
+            <h2>Install Smartesion AR</h2>
+
+            <p>
+                Install Smartesion AR for a faster experience,
+                offline support, notifications and quick access
+                directly from your Home Screen.
+            </p>
+
+            <div class="buttons">
+
+                <button id="installBtn">
+                    Install Now
+                </button>
+
+                <button id="laterBtn">
+                    Later
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+     <div id="root"></div>
+
+    <!-- React App -->
+
     <script type="module" src="/src/main.tsx"></script>
+
+    <script>
+
+        let deferredPrompt;
+
+        const fab = document.getElementById("installApp");
+        const overlay = document.getElementById("installOverlay");
+        const installBtn = document.getElementById("installBtn");
+        const laterBtn = document.getElementById("laterBtn");
+
+        // Register Service Worker
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/service-worker.js");
+        }
+
+        // Show overlay automatically
+        window.addEventListener("beforeinstallprompt", (e) => {
+
+            e.preventDefault();
+
+            deferredPrompt = e;
+
+            overlay.style.display = "flex";
+
+        });
+
+        // Install App
+        installBtn.addEventListener("click", async () => {
+
+            if (!deferredPrompt) return;
+
+            deferredPrompt.prompt();
+
+            const result = await deferredPrompt.userChoice;
+
+            if (result.outcome === "accepted") {
+                console.log("User accepted install.");
+            } else {
+                console.log("User dismissed install.");
+            }
+
+            deferredPrompt = null;
+
+            overlay.style.display = "none";
+            fab.style.display = "none";
+
+        });
+
+        // Later Button
+        laterBtn.addEventListener("click", () => {
+
+            overlay.style.display = "none";
+
+            // Show floating button
+            fab.style.display = "block";
+
+        });
+
+        // Floating button opens popup again
+        fab.addEventListener("click", () => {
+
+            overlay.style.display = "flex";
+
+        });
+
+        // Hide after installation
+        window.addEventListener("appinstalled", () => {
+
+            overlay.style.display = "none";
+            fab.style.display = "none";
+
+            console.log("App Installed");
+
+        });
+
+    </script>
+
 </body>
 
 </html>
