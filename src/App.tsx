@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type.ts from "type.ts";
-import css from "index.css";
 import React from "react";
 import TutorAppView from "./components/TutorAppView";
 import { 
