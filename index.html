@@ -184,85 +184,99 @@
         </div>
 
     </div>
-     <div id="root"></div>
+   <div id="root"></div>
 
-    <!-- React App -->
+<!-- React App -->
+<script type="module" src="/src/main.tsx"></script>
 
-    <script type="module" src="/src/main.tsx">
+<script>
 
-        let deferredPrompt;
+let deferredPrompt = null;
 
-        const fab = document.getElementById("installApp");
-        const overlay = document.getElementById("installOverlay");
-        const installBtn = document.getElementById("installBtn");
-        const laterBtn = document.getElementById("laterBtn");
+const fab = document.getElementById("installApp");
+const overlay = document.getElementById("installOverlay");
+const installBtn = document.getElementById("installBtn");
+const laterBtn = document.getElementById("laterBtn");
 
-        // Register Service Worker
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/service-worker.js");
-        }
+// Register Service Worker
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js")
+        .then(() => console.log("Service Worker Registered"))
+        .catch(err => console.log(err));
+    });
+}
 
-        // Show overlay automatically
-        window.addEventListener("beforeinstallprompt", (e) => {
+// Show install popup
+window.addEventListener("beforeinstallprompt", (e) => {
 
-            e.preventDefault();
+    e.preventDefault();
 
-            deferredPrompt = e;
+    deferredPrompt = e;
 
-            overlay.style.display = "flex";
+    overlay.style.display = "flex";
 
-        });
+});
 
-        // Install App
-        installBtn.addEventListener("click", async () => {
+// Install button
+installBtn.addEventListener("click", async () => {
 
-            if (!deferredPrompt) return;
+    if (!deferredPrompt) return;
 
-            deferredPrompt.prompt();
+    deferredPrompt.prompt();
 
-            const result = await deferredPrompt.userChoice;
+    const choice = await deferredPrompt.userChoice;
 
-            if (result.outcome === "accepted") {
-                console.log("User accepted install.");
-            } else {
-                console.log("User dismissed install.");
-            }
+    if (choice.outcome === "accepted") {
 
-            deferredPrompt = null;
+        console.log("User installed app");
 
-            overlay.style.display = "none";
-            fab.style.display = "none";
+    } else {
 
-        });
+        console.log("User cancelled install");
 
-        // Later Button
-        laterBtn.addEventListener("click", () => {
+        fab.style.display = "block";
 
-            overlay.style.display = "none";
+    }
 
-            // Show floating button
-            fab.style.display = "block";
+    overlay.style.display = "none";
 
-        });
+    deferredPrompt = null;
 
-        // Floating button opens popup again
-        fab.addEventListener("click", () => {
+});
 
-            overlay.style.display = "flex";
+// Later Button
+laterBtn.addEventListener("click", () => {
 
-        });
+    overlay.style.display = "none";
 
-        // Hide after installation
-        window.addEventListener("appinstalled", () => {
+    fab.style.display = "block";
 
-            overlay.style.display = "none";
-            fab.style.display = "none";
+});
 
-            console.log("App Installed");
+// Floating Button
+fab.addEventListener("click", () => {
 
-        });
+    if (deferredPrompt) {
 
-    </script>
+        overlay.style.display = "flex";
+
+    }
+
+});
+
+// App Installed
+window.addEventListener("appinstalled", () => {
+
+    overlay.style.display = "none";
+
+    fab.style.display = "none";
+
+    console.log("PWA Installed");
+
+});
+
+</script>
+
 </body>
-
 </html>
